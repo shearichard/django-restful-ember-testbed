@@ -1,7 +1,13 @@
+from rest_framework.views import APIView 
+from rest_framework import status
+from rest_framework.response import Response
+
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from rosebiology.serializers import UserSerializer, GroupSerializer
 
+from .models import Species, CommonName  
+from .serializers import SpeciesSerializer
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -17,3 +23,53 @@ class GroupViewSet(viewsets.ModelViewSet):
     """
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+
+#################################################################################
+
+class SpeciesList(APIView):
+    """
+    List all code species, or create a new species.
+    """
+    #permission_classes = (AllowAny,)
+    #authentication_classes = (SessionAuthentication, BasicAuthentication)
+    def get(self, request, format=None):
+        species = Species.objects.all()
+        serializer = SpeciesSerializer(species, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = SpeciesSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class SpeciesDetail(APIView):
+    """
+    Retrieve, update or delete a code species.
+    """
+    def get_object(self, pk):
+        try:
+            return Species.objects.get(pk=pk)
+        except Species.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        species = self.get_object(pk)
+        serializer = SpeciesSerializer(species)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        species = self.get_object(pk)
+        serializer = SpeciesSerializer(species, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_NOT_FOUND)
+
+    def delete(self, request, pk, format=None):
+        species = self.get_object(pk)
+        species.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+#################################################################################
