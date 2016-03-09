@@ -31,8 +31,8 @@ router.register(r'groups', views.GroupViewSet)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^roses/$', views.SpeciesList.as_view()),
-    url(r'^roses/(?P<pk>[0-9]+)/$', views.SpeciesDetail.as_view()),
+    url(r'^api/v1/roses/$', views.SpeciesList.as_view()),
+    url(r'^api/v1/roses/(?P<pk>[0-9]+)/$', views.SpeciesDetail.as_view()),
 ]
 
 
