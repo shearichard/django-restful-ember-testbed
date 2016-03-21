@@ -53,7 +53,7 @@ class SpeciesDetail(APIView):
         try:
             return Species.objects.get(pk=pk)
         except Species.DoesNotExist:
-            raise Http404
+            return Response(serializer.data, status=status.HTTP_404_NOT_FOUND)
 
     def get(self, request, pk, format=None):
         species = self.get_object(pk)
