@@ -4,6 +4,7 @@ from rest_framework.response import Response
 
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
+from rest_framework.permissions import AllowAny 
 from rosebiology.serializers import UserSerializer, GroupSerializer
 
 from .models import Species, CommonName  
@@ -30,7 +31,7 @@ class SpeciesList(APIView):
     """
     List all code species, or create a new species.
     """
-    #permission_classes = (AllowAny,)
+    permission_classes = (AllowAny,)
     #authentication_classes = (SessionAuthentication, BasicAuthentication)
     def get(self, request, format=None):
         species = Species.objects.all()
