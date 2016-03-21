@@ -49,6 +49,7 @@ class SpeciesDetail(APIView):
     """
     Retrieve, update or delete a code species.
     """
+    permission_classes = (AllowAny,)
     def get_object(self, pk):
         try:
             return Species.objects.get(pk=pk)
