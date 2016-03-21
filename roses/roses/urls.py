@@ -33,6 +33,8 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/v1/roses/$', views.SpeciesList.as_view()),
     url(r'^api/v1/roses/(?P<pk>[0-9]+)/$', views.SpeciesDetail.as_view()),
+    url(r'^api/v1/species/$', views.SpeciesList.as_view()),
+    url(r'^api/v1/species/(?P<pk>[0-9]+)/$', views.SpeciesDetail.as_view()),
 ]
 
 
