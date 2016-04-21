@@ -7,8 +7,8 @@ from rest_framework import viewsets
 from rest_framework.permissions import AllowAny 
 from rosebiology.serializers import UserSerializer, GroupSerializer
 
-from .models import Species, CommonName  
-from .serializers import SpeciesSerializer
+from .models import Species, Rose, CommonName  
+from .serializers import SpeciesSerializer, RoseSerializer
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -72,6 +72,56 @@ class SpeciesDetail(APIView):
     def delete(self, request, pk, format=None):
         species = self.get_object(pk)
         species.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+#################################################################################
+#################################################################################
+
+class RoseList(APIView):
+    """
+    List all rose, or create a new rose.
+    """
+    permission_classes = (AllowAny,)
+    #authentication_classes = (SessionAuthentication, BasicAuthentication)
+    def get(self, request, format=None):
+        rose = Rose.objects.all()
+        serializer = RoseSerializer(rose, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = RoseSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class RoseDetail(APIView):
+    """
+    Retrieve, update or delete a code rose.
+    """
+    permission_classes = (AllowAny,)
+    def get_object(self, pk):
+        try:
+            return Rose.objects.get(pk=pk)
+        except Rose.DoesNotExist:
+            return Response(serializer.data, status=status.HTTP_404_NOT_FOUND)
+
+    def get(self, request, pk, format=None):
+        rose = self.get_object(pk)
+        serializer = RoseSerializer(rose)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        rose = self.get_object(pk)
+        serializer = RoseSerializer(rose, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_NOT_FOUND)
+
+    def delete(self, request, pk, format=None):
+        rose = self.get_object(pk)
+        rose.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 #################################################################################

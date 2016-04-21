@@ -1,5 +1,8 @@
 from rest_framework import serializers
-from .models import Species
+
+from django.contrib.auth.models import User, Group
+
+from .models import Species, Rose
 
 
 class SpeciesSerializer(serializers.ModelSerializer):
@@ -7,10 +10,10 @@ class SpeciesSerializer(serializers.ModelSerializer):
         model = Species
         fields = ('binomial_nomenclature', 'subspecies', 'common_name', 'height_and_spread', 'range', 'use', 'further_reference', 'image', 'created', 'modified')
 
-
-from django.contrib.auth.models import User, Group
-from rest_framework import serializers
-
+class RoseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rose 
+        fields = ('binomial_nomenclature', 'height_and_spread', 'created', 'modified')
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

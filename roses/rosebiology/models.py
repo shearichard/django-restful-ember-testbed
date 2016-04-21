@@ -122,6 +122,38 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.user.username
 
+class Rose(models.Model):
+    '''
+    This is a cut-down version of Species to make initial
+    interactions with Ember easier to think about, also
+    because Ember-data has problems with 'Species' which is
+    both plural and singular - this idea steps outside of
+    the view of the world held by Ember-data
+    '''
+    binomial_nomenclature = models.CharField(max_length=200)
+    height_and_spread = models.CharField(max_length=100)
+    created = models.DateTimeField(editable=False)
+    modified = models.DateTimeField(editable=False)
+
+    class Meta:
+        verbose_name_plural = "roses"
+        permissions = (
+            ("display_details_roses_", "Can view details of a Species"),
+        )
+
+    def save(self, *args, **kwargs):
+        ''' On save, update timestamps '''
+        if not self.id:
+            self.created = datetime.datetime.today()
+        self.modified = datetime.datetime.today()
+        return super(__class__, self).save(*args, **kwargs)
+
+    def __str__(self): 
+        return "{}".format(self.binomial_nomenclature) 
+
+    @property
+    def name(self): 
+        return "{}".format(self.binomial_nomenclature) 
 '''
 from django.contrib.auth.models import AbstractUser
 class UserProfile(AbstractUser):
